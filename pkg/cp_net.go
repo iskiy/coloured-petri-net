@@ -4,18 +4,12 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+	"time"
 )
 
 type Place struct {
 	PlacesID int
 	Tokens   []string
-}
-
-func NewPlace(placesID int, tokens []string) *Place {
-	fmt.Println(tokens)
-	pl := &Place{PlacesID: placesID, Tokens: tokens}
-	pl.Tokens = tokens
-	return pl
 }
 
 func (p *Place) containsColour(colour string) (int, bool) {
@@ -65,13 +59,12 @@ func (t Transition) String() string {
 type PetriNet struct {
 	Places      []Place
 	Transitions []Transition
+	Limit       int
 }
 
 func (pn PetriNet) String() string {
 	var res = "Places: "
-	for _, p := range pn.Places {
-		res += fmt.Sprintf("\n\t ID: %d, Tokens: [%s]", p.PlacesID, strings.Join(p.Tokens, " "))
-	}
+	res += pn.PlacesToString()
 	res += "\nTransitions:"
 	for _, t := range pn.Transitions {
 		res += fmt.Sprintf("\n\t%s", t)
@@ -79,15 +72,25 @@ func (pn PetriNet) String() string {
 	return res
 }
 
+func (pn PetriNet) PlacesToString() string {
+	res := ""
+	for _, p := range pn.Places {
+		res += fmt.Sprintf("\n\t ID: %d, Tokens: [%s]", p.PlacesID, strings.Join(p.Tokens, " "))
+	}
+	return res
+}
+
 func (pn *PetriNet) Run() {
-	for {
+	for i := 0; i < pn.Limit; i++ {
 		transToExec := pn.FindExecTransitions()
 		if len(transToExec) == 0 {
 			break
 		}
+		rand.Seed(time.Now().UnixNano())
 		randomIndex := rand.Intn(len(transToExec))
-		fmt.Println(transToExec[randomIndex])
+		fmt.Println(fmt.Sprintf("Activation of %d transition", transToExec[randomIndex]))
 		pn.execTransition(transToExec[randomIndex])
+		fmt.Println(pn.PlacesToString() + "\n")
 	}
 }
 

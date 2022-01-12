@@ -18,6 +18,8 @@ func init() {
 }
 
 func main() {
+	petriLimit := 1000
+
 	place0 := Place{PlacesID: 0, Tokens: []string{red, green, blue}}
 	place1 := Place{PlacesID: 1, Tokens: []string{red, green, blue}}
 	place2 := Place{PlacesID: 2, Tokens: []string{}}
@@ -27,32 +29,42 @@ func main() {
 
 	var transition0 = Transition{
 		TransitionID: 0,
-		FromArcs:     []Arc{{red, 0, 0}},
-		ToArcs:       []Arc{{red, 0, 3}},
+		FromArcs: []Arc{
+			{red, 0, 0},
+		},
+		ToArcs: []Arc{
+			{red, 0, 3},
+		},
 	}
+
 	var transition1 = Transition{
 		TransitionID: 1,
-		FromArcs: []Arc{{blue, 1, 1},
+		FromArcs: []Arc{
+			{blue, 1, 1},
 			{green, 1, 1},
 			{blue, 0, 1},
 		},
-		ToArcs: []Arc{{red, 1, 2}},
+		ToArcs: []Arc{
+			{red, 1, 2},
+		},
 	}
 	var transition2 = Transition{
 		TransitionID: 2,
-		FromArcs: []Arc{{red, 2, 2},
+		FromArcs: []Arc{
+			{red, 2, 2},
 			{red, 3, 2},
 		},
-		ToArcs: []Arc{{blue, 2, 4},
+		ToArcs: []Arc{
+			{blue, 2, 4},
 			{green, 2, 5},
 		},
 	}
 	petriNet := PetriNet{Places: []Place{place0, place1, place2, place3, place4, place5},
-		Transitions: []Transition{transition0, transition1, transition2}}
+		Transitions: []Transition{transition0, transition1, transition2},
+		Limit:       petriLimit}
+
 	fmt.Println(petriNet.FindExecTransitions())
 	fmt.Println(petriNet)
 	fmt.Println("\n")
 	petriNet.Run()
-
-	fmt.Println(petriNet)
 }
